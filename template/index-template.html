@@ -1,0 +1,21 @@
+<html$if(lang)$ lang="$lang$"$endif$>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta name="generator" content="pandoc" />
+$if(title)$
+        <meta name="description" content="$title$" />
+$endif$
+$for(author-meta)$
+        <meta name="author" content="$author-meta$" />
+$endfor$
+        <title>$if(title-prefix)$$title-prefix$ - $endif$$if(pagetitle)$$pagetitle$$endif$</title>
+    </head>
+    <body>
+        <div class="wrapper">
+
+$body$
+
+        </div>
+    </body>
+</html>
