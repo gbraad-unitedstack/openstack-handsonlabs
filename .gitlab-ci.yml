@@ -2,7 +2,7 @@ image: gbraad/docugen:latest
 
 pages:
   script:
-  - pandoc -o building-multitier-application-using-OpenStack.pdf ./neutron/building-multitier-application.md
+  - pandoc -V geometry:margin=1in -o building-multitier-application-using-OpenStack.pdf ./neutron/building-multitier-application.md
   - pandoc -t html5 --template template/index-template.html --standalone -o index.html ./index.md
   - mkdir .public
   - cp -r * .public
