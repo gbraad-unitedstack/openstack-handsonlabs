@@ -1,5 +1,7 @@
 # Building a multi-tier application using OpenStack (PackStack)
 
+_Gerard Braad <me@gbraad.nl>_
+
 
 To setup the environment quickly, we will be using PackStack. PackStack is an
 installation utility to quickly deploy an OpenStack cloud. In our case we will
@@ -55,7 +57,8 @@ $ openstack network list
 
 ## Setup security groups
 
-First we’ll create the three security groups we’ll need to contain the members: web, database and ssh.
+First we’ll create the three security groups we’ll need to contain the members:
+web, database and ssh.
 
 ```
 $ openstack security group create web
@@ -115,7 +118,8 @@ Now we’ll add rules into these security groups for their desired functionality
 Allow all HTTP traffic on port 80 to the `web` security group:
 
 ```
-$ neutron security-group-rule-create --direction ingress --protocol TCP --port-range-min 80 --port-range-max 80 web
+$ neutron security-group-rule-create --direction ingress --protocol TCP \ 
+> --port-range-min 80 --port-range-max 80 web
 ```
     Created a new security_group_rule:
     +-------------------+--------------------------------------+
@@ -136,7 +140,8 @@ $ neutron security-group-rule-create --direction ingress --protocol TCP --port-r
 Allow database servers to be accessed from the web servers:
 
 ```
-$ neutron security-group-rule-create --direction ingress --protocol TCP --port-range-min 3306 --port-range-max 3306 --remote-group-id web database
+$ neutron security-group-rule-create --direction ingress --protocol TCP \
+> --port-range-min 3306 --port-range-max 3306 --remote-group-id web database
 ```
     Created a new security_group_rule:
     +-------------------+--------------------------------------+
@@ -158,7 +163,8 @@ $ neutron security-group-rule-create --direction ingress --protocol TCP --port-r
 Allow the jump host to `ssh` into both the database servers and webservers
 
 ```
-$ neutron security-group-rule-create --direction ingress --protocol TCP --port-range-min 22 --port-range-max 22 --remote-group-id ssh database
+$ neutron security-group-rule-create --direction ingress --protocol TCP \ 
+> --port-range-min 22 --port-range-max 22 --remote-group-id ssh database
 ```
     Created a new security_group_rule:
     +-------------------+--------------------------------------+
@@ -176,7 +182,8 @@ $ neutron security-group-rule-create --direction ingress --protocol TCP --port-r
     | tenant_id         | 3d44af649a1c42fcaa102ed11e3f010f     |
     +-------------------+--------------------------------------+
 ```
-$ neutron security-group-rule-create --direction ingress --protocol TCP --port-range-min 22 --port-range-max 22 --remote-group-id ssh web
+$ neutron security-group-rule-create --direction ingress --protocol TCP \
+> --port-range-min 22 --port-range-max 22 --remote-group-id ssh web
 ```
     Created a new security_group_rule:
     +-------------------+--------------------------------------+
@@ -198,7 +205,8 @@ $ neutron security-group-rule-create --direction ingress --protocol TCP --port-r
 Allow the outside world to be able to `ssh` into the jump host on port 22:
 
 ```
-$ neutron security-group-rule-create --direction ingress --protocol tcp  --port-range-min 22 --port-range-max 22 ssh
+$ neutron security-group-rule-create --direction ingress --protocol tcp \
+> --port-range-min 22 --port-range-max 22 ssh
 ```
     Created a new security_group_rule:
     +-------------------+--------------------------------------+
@@ -219,8 +227,9 @@ $ neutron security-group-rule-create --direction ingress --protocol tcp  --port-
 
 ## Setup virtual machines
 
-Now we can boot some virtual machines that will make use of these security groups.
-Run `openstack net work list` to obtain the private network `uuid` that we are going to be using:
+Now we can boot some virtual machines that will make use of these security
+groups. Run `openstack net work list` to obtain the private network `uuid` that
+we are going to be using:
 
 ```
 $ openstack network list
@@ -233,8 +242,9 @@ $ openstack network list
     +--------------------------------------+---------+--------------------------------------+
 
 
-Then, we’ll run `openstack image list` to determine the images available to boot our instances with.
-Since we’re using _packstack_, the script automatically uploaded an image to _glance_ for us to use.
+Then, we’ll run `openstack image list` to determine the images available to boot
+our instances with. Since we’re using _packstack_, the script automatically
+uploaded an image to _glance_ for us to use.
 
 ```
 $ openstack image list
@@ -270,18 +280,23 @@ $ openstack flavor list
     | 5  | m1.xlarge | 16384 |  160 |         0 |     8 | True      |
     +----+-----------+-------+------+-----------+-------+-----------+
 
-So we will be using flavor 1, which means instances are created with 512MB of memory and a disk of 1G.
+So we will be using flavor 1, which means instances are created with 512MB of
+memory and a disk of 1G.
 
 Note:  
-We also have to make sure that each instances has an IP address on the private network. For this we are including the `--nic net-id=` option specifying the network ID of the private network.
+We also have to make sure that each instances has an IP address on the private
+network. For this we are including the `--nic net-id=` option specifying the
+network ID of the private network.
 
 
 ### Setup web servers
 
-Boot two instances named `web_server1` and `web_server2` on the private network using the `cirros` image and part of the web security group:
+Boot two instances named `web_server1` and `web_server2` on the private network
+using the `cirros` image and part of the web security group:
 
 ```
-$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --security_groups web --flavor 1 web_server1
+$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 \
+> --security_groups web --flavor 1 web_server1
 ```
     +--------------------------------------+-----------------------------------------------+
     | Property                             | Value                                         |
@@ -318,7 +333,8 @@ $ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --s
     +--------------------------------------+-----------------------------------------------+
 
 ```
-$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --security_groups web --flavor 1 web_server2
+$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 \ 
+> --security_groups web --flavor 1 web_server2
 ```
     +--------------------------------------+-----------------------------------------------+
     | Property                             | Value                                         |
@@ -360,7 +376,8 @@ $ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --s
 Boot database server
 
 ```
-$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --security_groups database --flavor 1 database_server
+$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 \
+> --security_groups database --flavor 1 database_server
 ```
     +--------------------------------------+-----------------------------------------------+
     | Property                             | Value                                         |
@@ -402,7 +419,8 @@ $ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --s
 Boot ssh jump host
 
 ```
-$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --security_groups ssh --flavor 1 jumphost
+$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 \
+> --security_groups ssh --flavor 1 jumphost
 ```
     +--------------------------------------+-----------------------------------------------+
     | Property                             | Value                                         |
@@ -441,11 +459,17 @@ $ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --s
 
 ### Client
 
-We will also create a client instance that we will use to access the web servers from.
-Note: Since we did not specify a security group this instance will be part of a `default` security group which allows the instance to make outgoing connections to anyone but only accept incoming connections from members of this same security group.
+We will also create a client instance that we will use to access the web servers
+from.
+
+Note: Since we did not specify a security group this instance will be part of a
+`default` security group which allows the instance to make outgoing connections
+to anyone but only accept incoming connections from members of this same
+security group.
 
 ```
-$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --flavor 1 client
+$ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 \
+> --flavor 1 client
 ```
     +--------------------------------------+-----------------------------------------------+
     | Property                             | Value                                         |
@@ -484,7 +508,8 @@ $ nova boot --image cirros --nic net-id=84aff6b0-2291-41b5-9871-d3d24906e358 --f
 
 ### Check virtual machines
 
-Running `openstack server list` will display the status of the instances. After a few seconds all of the instances should go to an ACTIVE status.
+Running `openstack server list` will display the status of the instances. After
+a few seconds all of the instances should go to an ACTIVE status.
 
 ```
 $ openstack server list
@@ -502,7 +527,8 @@ $ openstack server list
 
 ### Setup public IP address for SSH
 
-To make the jumphost publicly accessible on the internet we’ll need to assign a floating IP to it. To do this first create a floating IP via:
+To make the jumphost publicly accessible on the internet we’ll need to assign a
+floating IP to it. To do this first create a floating IP via:
 
 ```
 $ neutron floatingip-create public
@@ -541,11 +567,13 @@ $ neutron port-list
     | f9e097b4-4227-49ee-9442-643c4186e587 |      | fa:16:3e:a5:36:2c | {"subnet_id": "92432fb8-8c29-4abe-98d8-de8bf161a18b", "ip_address": "10.0.0.2"}     |
     +--------------------------------------+------+-------------------+-------------------------------------------------------------------------------------+
 
-and find the _id_ that matches the IP address of the jumphost (10.0.0.6) and associate it via:
+and find the _id_ that matches the IP address of the jumphost (10.0.0.6) and
+associate it via:
 
 ```
 # neutron floatingip-associate [floating_ip id] [port-list id]
-$ neutron floatingip-associate ce6efd31-97e9-428b-a3ac-b5a14e77a305 5d98aa79-8bc0-4512-a128-078281aae2bc
+$ neutron floatingip-associate ce6efd31-97e9-428b-a3ac-b5a14e77a305 \
+> 5d98aa79-8bc0-4512-a128-078281aae2bc
 ```
     Associated floating IP ce6efd31-97e9-428b-a3ac-b5a14e77a305
 
@@ -575,7 +603,8 @@ $ ssh cirros@172.24.4.228
     $
 
 
-After logging into the jumpbox you’ll be able to ssh into your _webserver1_, _webserver2_, and _database server_ via:
+After logging into the jumpbox you’ll be able to ssh into your _webserver1_,
+_webserver2_, and _database server_ via:
 
 ```
 $ ssh 10.0.0.3
@@ -594,12 +623,15 @@ $ ssh 10.0.0.5
 ```
     ...
 
-None of those instances will be able to ssh to each other. The point of this instance is so that you do not need to have all of your other instances publicly addressable and directly accessible via the internet.
+None of those instances will be able to ssh to each other. The point of this
+instance is so that you do not need to have all of your other instances publicly
+addressable and directly accessible via the internet.
 
 
 ### Simulate web server
 
-Now let’s log in to `web_server1` and `web_server2` (via ssh or via horizon) and setup a simple web server to handle requests and reply with who they are:
+Now let’s log in to `web_server1` and `web_server2` (via ssh or via horizon) and
+setup a simple web server to handle requests and reply with who they are:
 
 ```
 # On web_server 1 (10.0.0.3)
@@ -616,7 +648,8 @@ $ exit
 
 ### Simulate HTTP request
 
-Now, log in to your _client_ virtual machine (from the web console). From there if you run:
+Now, log in to your _client_ virtual machine (from the web console). From there
+if you run:
 
 ```
 $ wget -O - http://10.0.0.3/
@@ -633,12 +666,16 @@ $ wget -O - http://10.0.0.4/
                    100% |************************************| 12 0:00:00 ETA
 
 
-This demonstrates that our simple web server is working on our two web server instances.
+This demonstrates that our simple web server is working on our two web server
+instances.
 
 
 ### Optional check
 
-We can demonstrate that the web security group is working correctly by killing our simple web server and changing the port number. (Note: to kill the web server you may need to hold control + c for a second in order for it to break out of the while loop before another instance of nc is created.)
+We can demonstrate that the web security group is working correctly by killing
+our simple web server and changing the port number. (Note: to kill the web
+server you may need to hold control + c for a second in order for it to break
+out of the while loop before another instance of nc is created.)
 
 ```
 # On web_server 1 
@@ -654,12 +691,15 @@ $ wget -O - http://10.0.0.3:81
     wget: can't connect to remote host (10.0.0.3): Connection timed out
     
 
-As you can see the request is never answered as expected because our web security group does not allow port 81 ingress. Now let’s set the web server to run on port 80 again.
+As you can see the request is never answered as expected because our web
+security group does not allow port 81 ingress. Now let’s set the web server to
+run on port 80 again.
 
 
 ### Provision loadbalancer
 
-At this point were going to provision loadbalancer via neutron in order to load balance requests between our two web server instances.
+At this point were going to provision loadbalancer via neutron in order to load
+balance requests between our two web server instances.
 
 ```
 $ neutron subnet-list
@@ -675,7 +715,8 @@ $ neutron subnet-list
 Create a loadbalancer pool:
 
 ```
-$ neutron lb-pool-create --name http-pool --lb-method ROUND_ROBIN --protocol HTTP --subnet-id 92432fb8-8c29-4abe-98d8-de8bf161a18b
+$ neutron lb-pool-create --name http-pool --lb-method ROUND_ROBIN \
+> --protocol HTTP --subnet-id 92432fb8-8c29-4abe-98d8-de8bf161a18b
 ```
     Created a new pool:
     +------------------------+--------------------------------------+
@@ -699,7 +740,8 @@ $ neutron lb-pool-create --name http-pool --lb-method ROUND_ROBIN --protocol HTT
     +------------------------+--------------------------------------+
 
 
-You can verify the creation of the _http-pool_ with the `neutron lb-pool-list` and `neutron lb-pool-show http-pool` command.
+You can verify the creation of the _http-pool_ with the `neutron lb-pool-list`
+and `neutron lb-pool-show http-pool` command.
 
 ```
 $ neutron lb-pool-list
@@ -735,10 +777,12 @@ $ neutron lb-pool-show http-pool
     +------------------------+--------------------------------------+
 
 
-Now, let’s create a health monitor, which checks to make sure our instances are still running and associate that with the pool:
+Now, let’s create a health monitor, which checks to make sure our instances are
+still running and associate that with the pool:
 
 ```
-$ neutron lbaas-healthmonitor-create --delay 3 --type HTTP --max-retries 3 --timeout 3 --pool webserver-pool
+$ neutron lbaas-healthmonitor-create --delay 3 --type HTTP --max-retries 3 \
+> --timeout 3 --pool webserver-pool
 ```
 
 
@@ -800,7 +844,8 @@ $ neutron lb-member-list
 We need to create a health monitor, which will check our instances to make sure they are still running
 
 ```
-$ neutron lb-healthmonitor-create --delay 3 --type HTTP --max-retries 3 --timeout 3
+$ neutron lb-healthmonitor-create --delay 3 --type HTTP --max-retries 3 \
+> --timeout 3
 ```
     Created a new health_monitor:
     +----------------+--------------------------------------+
@@ -820,7 +865,8 @@ $ neutron lb-healthmonitor-create --delay 3 --type HTTP --max-retries 3 --timeou
     +----------------+--------------------------------------+
 
 
-Now we have to associate the health monitor to the previously created loadbalancer pool.
+Now we have to associate the health monitor to the previously created
+loadbalancer pool.
 
 ```
 $ neutron lb-healthmonitor-associate 05cbf7f9-d01b-483b-934e-8955b14a1653 http-pool
@@ -828,10 +874,14 @@ $ neutron lb-healthmonitor-associate 05cbf7f9-d01b-483b-934e-8955b14a1653 http-p
     Associated health monitor 05cbf7f9-d01b-483b-934e-8955b14a1653
 
 
-To make the loadbalancer and associated health monitor available, we need to assign it a Virual IP. The address will be allocated from the private subnet. This address will redirect the request to either instance within the pool to handle the request.
+To make the loadbalancer and associated health monitor available, we need to
+assign it a Virual IP. The address will be allocated from the private subnet.
+This address will redirect the request to either instance within the pool to
+handle the request.
 
 ```
-$ neutron lb-vip-create --name webserver-vip --protocol-port 80 --protocol HTTP --subnet-id 92432fb8-8c29-4abe-98d8-de8bf161a18b http-pool
+$ neutron lb-vip-create --name webserver-vip --protocol-port 80 \
+> --protocol HTTP --subnet-id 92432fb8-8c29-4abe-98d8-de8bf161a18b http-pool
 ```
     Created a new vip:
     +---------------------+--------------------------------------+
@@ -857,7 +907,8 @@ $ neutron lb-vip-create --name webserver-vip --protocol-port 80 --protocol HTTP 
 
 ### Verify loadbalancer
 
-Finally, let’s test out the loadbalancer. From the client instance we should be able to run wget at 10.0.0.8 and see that it loadbalancers our requests.
+Finally, let’s test out the loadbalancer. From the client instance we should be
+able to run wget at 10.0.0.8 and see that it loadbalancers our requests.
 
 ```
 $ for i in $(seq 1 4) ; do wget -O - http://10.0.0.8/ ; done
@@ -876,12 +927,15 @@ $ for i in $(seq 1 4) ; do wget -O - http://10.0.0.8/ ; done
     -                    100% |************************************| 12 0:00:00 ETA
 
 
-From the output above you can see that the the requests are being handled by `web_server1` then `web_server2` in an alternating fashion according to the round robin method.
+From the output above you can see that the the requests are being handled by
+`web_server1` then `web_server2` in an alternating fashion according to the
+round robin method.
 
 
 ### Setup public IP address for web traffic
 
-Now to make our VIP publicly accessible via the internet we need to create another floating IP:
+Now to make our VIP publicly accessible via the internet we need to create
+another floating IP:
 
 ```
 $ neutron floatingip-create public
@@ -926,13 +980,18 @@ $ neutron port-list
 Associate VIP port with floating IP:
 
 ```
-$ neutron floatingip-associate 3c15f8a4-bdc6-4154-8bfa-e8b0674079ca ecbadc53-5266-4146-bbb3-d1b6d383be10
+$ neutron floatingip-associate 3c15f8a4-bdc6-4154-8bfa-e8b0674079ca \
+> ecbadc53-5266-4146-bbb3-d1b6d383be10
 ```
     Associated floating IP 3c15f8a4-bdc6-4154-8bfa-e8b0674079ca
 
 
-At this point the Virtual IP is a member of the _default_ security group which does not allow ingress traffic unless you are also part of a security group which allows incoming traffic.
-We need to update the VIP to be a member of the _web_ security group so that requests from the internet are allowed to pass (not just from our client instance).
+At this point the Virtual IP is a member of the _default_ security group which
+does not allow ingress traffic unless you are also part of a security group
+which allows incoming traffic. We need to update the VIP to be a member of the
+_web_ security group so that requests from the internet are allowed to pass
+(not just from our client instance).
+
 Get the web security group uuid:
 
 ```
@@ -970,7 +1029,8 @@ $ neutron security-group-list
 Update VIP port to be a member of the _web_ security group:
 
 ```
-$ neutron port-update ecbadc53-5266-4146-bbb3-d1b6d383be10 --security_groups list=true a98fcd2f-a828-4a88-92aa-36e3c1223a92
+$ neutron port-update ecbadc53-5266-4146-bbb3-d1b6d383be10 --security_groups \
+> list=true a98fcd2f-a828-4a88-92aa-36e3c1223a92
 ```
     Updated port: ecbadc53-5266-4146-bbb3-d1b6d383be10
 
@@ -996,14 +1056,16 @@ $ for i in $(seq 1 4) ; do wget -O - http://172.24.4.229/ ; done
     -                    100% |************************************| 12 0:00:00 ETA
 
 
-To demonstration high availability, we’ll go and delete our `web_server1` instance to simulate a failure.
+To demonstration high availability, we’ll go and delete our `web_server1`
+instance to simulate a failure.
 
 ```
 $ openstack server delete web_server1
 ```
 
 
-After the health monitor detects the host is not responding it will stop sending requests to `web_server1`. Now `web_server2` is handling all the requests.
+After the health monitor detects the host is not responding it will stop sending
+requests to `web_server1`. Now `web_server2` is handling all the requests.
 
 ```
 $ for i in $(seq 1 4) ; do wget -O - http://172.24.4.229/ ; done
@@ -1022,6 +1084,10 @@ $ for i in $(seq 1 4) ; do wget -O - http://172.24.4.229/ ; done
     -                    100% |************************************| 12 0:00:00 ETA
 
 
-Note: the first request might take longer to handle. This is because of the timeout before it notices the host is not responding.
+Note: the first request might take longer to handle. This is because of the
+timeout before it notices the host is not responding.
 
 
+----
+
+This work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/).
