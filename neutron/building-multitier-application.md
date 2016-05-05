@@ -14,8 +14,8 @@ test deploying our multi-tier application.
 Use a RHEL or CentOS 7 installation.
 
 ```
-$ chkconfig NetworkManager off
-$ chkconfig network on
+$ systemctl disable NetworkManager
+$ systemctl enable network
 $ systemctl stop NetworkManager.service
 $ systemctl start network.service
 ```
