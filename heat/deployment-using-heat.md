@@ -64,3 +64,9 @@ and create the stack:
 ```
 (venv) $ heat stack-create my_stack -f create-instance.yaml -P "key=gbraad;image=Fedora-23"
 ```
+
+To see the output of the heat stack:
+
+```
+(venv) $ heat stack-show my_stack
+```
