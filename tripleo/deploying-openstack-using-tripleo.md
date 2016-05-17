@@ -72,7 +72,7 @@ $ curl http://artifacts.ci.centos.org/rdo/images/mitaka/delorean/stable/underclo
 We will create a virtual environment for out TripleO deployment. This will
 provide you with the knowledge you need to perform a bare-metal installation.
 
-You can define the node deployment inside a configuration file, e.g. called 
+You can define the node deployment inside a configuration file, eg. called 
 `deploy-config.yml`. This will contain the following:
 
 ```
@@ -129,20 +129,60 @@ Now you can perform the _undercloud_ deployment using:
 $ ./quickstart.sh --config deploy-config.yml --undercloud-image-url file:///var/lib/oooq-images/undercloud-mitaka.qcow2 $VIRTHOST
 ```
 
-This will target the node as specified with the `$VIRTHOST` environment
-variable, and according to the `deploy-config.yml` which we defined earlier.
+But before you do, please continue reading about the `Deployment scripts`.
+
+The previous command will target the node as specified with the `$VIRTHOST` 
+environment variable, and according to the `deploy-config.yml` which we defined
+earlier.
 
 It will login to this node and create a `stack` user which will be running the
 virtual machines. Later we will inspect this. After creating the virtual
-machines it will setup the `undercloud` machine.
+machines it will prepare the `undercloud` machine. After this, you still need to
+start the actual deployment. 
 
 
-## Tags and scripts
+## Deployment scripts
+To login to the undercloud:
 
+```
+$ ssh -F $OPT_WORKDIR/ssh.config.ansible undercloud
+```
+
+The undercloud is not fully prepared, you would have to do so with the following
+scripts.
+
+Undercloud (management)
+
+  * `undercloud-install.sh` will run the undercloud install and execute
+    diskimage elements.
+  * `undercloud-post-install.sh` will perform all pre-deploy steps, such as
+    uploading the images to _glance_
+
+Overcloud (workload)
+
+  * `overcloud-deploy.sh` will deploy the overcloud, creating a _heat_ stack
+    and will use the nodes as defined in `instack-env.json` and the extra
+    arguments given in the deployment configuration.
+  * `overcloud-deploy-post.sh` will do any post-deploy configuration
+    such as writing a local `/etc/hosts` file.
+  * `overcloud-validate.sh` will run post-deploy validation, like a
+    _pingtest_ and possible _tempest_
+
+
+You can run these scripts one by one... or install the whole _undercloud_ and
+_overcloud_ using the command:
 
 ```
 $ ./quickstart.sh --tags all --config deploy-config.yml --undercloud-image-url file:///var/lib/oooq-images/undercloud-mitaka.qcow2 $VIRTHOST
 ```
+
+Using `--tags all` will instruct ansible to perform all the steps and scripts
+as previously described. I suggest you to run the steps first each one by one
+and look into the scripts itself to understand how they interact with
+`python-tripleoclient` (eg. `openstack undercloud` and `openstack overcloud`).
+
+
+---
 
 
 ## Login to undercloud node
