@@ -182,14 +182,18 @@ and look into the scripts itself to understand how they interact with
 `python-tripleoclient` (eg. `openstack undercloud` and `openstack overcloud`).
 
 
----
-
-
-## Login to undercloud node
-
 ```
-$ ssh -F ~/.quickstart/ssh.config.ansible
+[stack@undercloud ~]$ ./undercloud-install.sh
+[stack@undercloud ~]$ ./undercloud-post-install.sh
+[stack@undercloud ~]$ ./overcloud-deploy.sh
+[stack@undercloud ~]$ ./overcloud-deploy-post.sh
+[stack@undercloud ~]$ ./overcloud-validate.sh
 ```
+
+
+## Undercloud node
+On the _undercloud_ node 
+
 
 
 ## Login to overcloud nodes
@@ -197,7 +201,7 @@ If you need to inspect a node in the overcloud (workload), you can login to thes
 
 
 ```
-$ ssh -i ~/.ssh/id_rsa heat-admin@[nodeip]
+[stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[nodeip]
 ```
 
 
