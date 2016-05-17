@@ -277,10 +277,18 @@ $ ./build.sh $VIRTHOST
 After the command finishes succesfully, the images can be found in
 `/var/lib/oooq-images`.
 
+Note: The content of `/var/lib/oooq-images` will be cleaned on run. After this
+it will download a base image from
+`http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2` of
+about 800M. You can download this image and specify the location in the
+`defaults/main.yml` file to prevent it from having to be downloaded each time.
+
 
 ## More information
 
   * Deployment configuration options  
     https://github.com/openstack/tripleo-quickstart/blob/master/docs/configuring.md
-  * [Scratchpad](https://github.com/gbraad/openstack-tripleo-scratchpad) for
-    development/architecture notes on TripleO.
+  * Scratchpad for development/architecture notes on TripleO  
+    https://github.com/gbraad/openstack-tripleo-scratchpad
+  * Openstack deployment using RDO-Manager  
+    https://remote-lab.net/rdo-manager-ha-openstack-deployment
