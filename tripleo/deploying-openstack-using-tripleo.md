@@ -53,6 +53,21 @@ keyset. If not, generate one with `ssh-keygen`. For further information please
 consult the `man` page or verify online.
 
 
+## Cache deployment images locally
+Although this step is not necessary, you can pre-download the images and cache
+them locally. This can be helpful if you want to perform the deployment using
+different images and/or suffer from bad connectivity.
+
+The location if the images is currently at `http://artifacts.ci.centos.org/rdo/images/{{release}}/delorean/stable/undercloud.qcow2`.
+
+To download the _mitaka_ image, you can do this with
+
+```
+$ mkdir /var/lib/oooq-images
+$ curl http://artifacts.ci.centos.org/rdo/images/mitaka/delorean/stable/undercloud.qcow2 -o /var/lib/oooq-images/undercloud-mitaka.qcow2
+```
+
+
 ## Deployment configuration file
 We will create a virtual environment for out TripleO deployment. This will
 provide you with the knowledge you need to perform a bare-metal installation.
@@ -89,37 +104,38 @@ extra_args: "--control-scale 3 --ceph-storage-scale 3 -e /usr/share/openstack-tr
 
 Nodes can be assigned a role by setting the flavor:
 
-    * `control` sets up a controller node, which also handles the network.
-    * `compute` sets up a Nova compute node.
-    * `ceph` sets up a node for Ceph storage.
+  * `control` sets up a controller node, which also handles the network.
+  * `compute` sets up a Nova compute node.
+  * `ceph` sets up a node for Ceph storage.
 
 
 The extra arguments allow you to modify the deployment that is performed.
 
-    * `--control-scale 3` instructs the deployment to assign 3 nodes with the
+  * `--control-scale 3` instructs the deployment to assign 3 nodes with the
       controller role.
-    * `--ceph-storage-scale 3` instructs the deployment to assign 3 nodes to
+  * `--ceph-storage-scale 3` instructs the deployment to assign 3 nodes to
       be used for the Ceph storage backend.
-    * `-e puppet-pacemaker.yaml` will setup pacemaker HA for the controller
+  * `-e puppet-pacemaker.yaml` will setup pacemaker HA for the controller
       nodes
-    * `--ntp-server pool.ntp.org` will sync time on the nodes using NTP.
+  * `--ntp-server pool.ntp.org` will sync time on the nodes using NTP.
 
 Note: if you want to use all compute nodes at once, include `--compute-scale 3`. But in this article I am using these additional nodes for scale out.
 
 
 ## Perform deployment
-
-
-	* `--tags all`
-
+Now you can perform the _undercloud_ deployment using:
 
 ```
-$ ./quickstart.sh --tags all
+$ ./quickstart.sh --config deploy-config.yml --undercloud-image-url file:///var/lib/oooq-images/undercloud-mitaka.qcow2 $VIRTHOST
 ```
+
+
 
 
 ## Tags and scripts
 
+
+  * `--tags all` 
 
 
 ## Login to undercloud node
