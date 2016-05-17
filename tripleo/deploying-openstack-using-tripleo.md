@@ -279,5 +279,8 @@ After the command finishes succesfully, the images can be found in
 
 
 ## More information
-See [scratchpad](https://github.com/gbraad/openstack-tripleo-scratchpad) for
-notes on TripleO.
+
+  * Deployment configuration options  
+    https://github.com/openstack/tripleo-quickstart/blob/master/docs/configuring.md
+  * [Scratchpad](https://github.com/gbraad/openstack-tripleo-scratchpad) for
+    development/architecture notes on TripleO.
