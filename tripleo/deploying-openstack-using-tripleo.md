@@ -129,13 +129,20 @@ Now you can perform the _undercloud_ deployment using:
 $ ./quickstart.sh --config deploy-config.yml --undercloud-image-url file:///var/lib/oooq-images/undercloud-mitaka.qcow2 $VIRTHOST
 ```
 
+This will target the node as specified with the `$VIRTHOST` environment
+variable, and according to the `deploy-config.yml` which we defined earlier.
 
+It will login to this node and create a `stack` user which will be running the
+virtual machines. Later we will inspect this. After creating the virtual
+machines it will setup the `undercloud` machine.
 
 
 ## Tags and scripts
 
 
-  * `--tags all` 
+```
+$ ./quickstart.sh --tags all --config deploy-config.yml --undercloud-image-url file:///var/lib/oooq-images/undercloud-mitaka.qcow2 $VIRTHOST
+```
 
 
 ## Login to undercloud node
@@ -146,15 +153,18 @@ $ ssh -F ~/.quickstart/ssh.config.ansible
 
 
 ## Login to overcloud nodes
-If you need to inspect a node in the overcloud (workload), you can login using the following command:
+If you need to inspect a node in the overcloud (workload), you can login to these nodes from the undercloud using the following command:
+
 
 ```
-# From the undercloud node
 $ ssh -i ~/.ssh/id_rsa heat-admin@[nodeip]
 ```
 
 
 ## Scale out
+
+
+## Diskimage building
 
 
 ## More information
