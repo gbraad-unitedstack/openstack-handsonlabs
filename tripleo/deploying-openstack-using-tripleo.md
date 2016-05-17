@@ -218,16 +218,49 @@ You can verify this from the _undercloud_ node.
 This will show a list of nodes that are available in the environment. This information 
 
 
+## Login to the overcloud
+From the undercloud node you can source the stack resource file and use the
+_openstack clients_ as usual.
+
+```
+[stack@undercloud ~]$ . overcloudrc
+[stack@undercloud ~]$ cat overcloudrc
+[stack@undercloud ~]$ nova list
+```
+
+In the previous output you also see the `OS_AUTH_URL` and the credentials
+needed to login from the Horizon dashboard.
+
+Either using ssh portforwaring, or the dynamic proxy option, you can open the
+dashboard.
+
+```
+$ ssh -F ~/.quickstart/ssh.config.ansible undercloud -D 8080
+```
+
+Either using Firefox (with the FoxyProxy extension) or Chrome/Vivaldi (with the
+SwitchySharp extension) you can set a SOCKS proxy at `127.0.0.1` and port
+`8080`.
+
+
 ## Login to overcloud nodes
 If you need to inspect a node in the overcloud (workload), you can login to these nodes from the undercloud using the following command:
 
 ```
-[stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[nodeip]
+[stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[hostname/nodeip]
 ```
+
+Note: you can find the hostnames and IP addresses on the _undercloud_ in the
+`/etc/hosts` file.
 
 
 ## Scale out
 
+```
+[stack@undercloud ~]$ for i in $(ironic node-list | grep Available | grep -v UUID | awk ' { print $2 } '); do
+> ironic node-set-maintenance $i false;
+> done
+```
 
 
 ## Diskimage building
