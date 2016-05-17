@@ -3,8 +3,11 @@ image: gbraad/docugen:latest
 pages:
   script:
   - pandoc -V geometry:margin=1in -o building-multitier-application-using-OpenStack.pdf ./neutron/building-multitier-application.md
+  - pandoc -t html5 --template template/index-template.html --standalone -o building-multitier-application-using-OpenStack.html ./neutron/building-multitier-application.md
   - pandoc -V geometry:margin=1in -o deployment-using-OpenStack-Heat.pdf ./heat/deployment-using-heat.md
+  - pandoc -t html5 --template template/index-template.html --standalone -o deployment-using-OpenStack-Heat.html ./heat/deployment-using-heat.md
   - pandoc -V geometry:margin=1in -o deploying-OpenStack-using-TripleO.pdf ./tripleo/deploying-openstack-using-tripleo.md
+  - pandoc -t html5 --template template/index-template.html --standalone -o deploying-OpenStack-using-TripleO.html ./tripleo/deploying-openstack-using-tripleo.md 
   - pandoc -t html5 --template template/index-template.html --standalone -o index.html ./index.md
   - mkdir .public
   - cp -r * .public
