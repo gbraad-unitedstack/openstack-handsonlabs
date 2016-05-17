@@ -192,13 +192,34 @@ and look into the scripts itself to understand how they interact with
 
 
 ## Undercloud node
-On the _undercloud_ node 
+After running these commands, you will have a fully deployed environment.
+You can verify this from the _undercloud_ node.
 
+```
+[stack@undercloud ~]$ . stackrc
+[stack@undercloud ~]$ ironic node-list
+```
+
+    +--------------------------------------+-----------+--------------------------------------+-------------+--------------------+-------------+
+    | UUID                                 | Name      | Instance UUID                        | Power State | Provisioning State | Maintenance |
+    +--------------------------------------+-----------+--------------------------------------+-------------+--------------------+-------------+
+    | ccf541fc-180e-4777-bfb6-71e92be50de3 | control-0 | c709bd16-a62a-4898-b9c0-308bcfc8a6b4 | power on    | active             | False       |
+    | 90e16fbb-2386-48c3-8d55-1210672aa8b6 | control-1 | afbc52cc-4c5c-48e3-aed5-d68dda436601 | power on    | active             | False       |
+    | e9f01263-8d89-45e4-a5da-4b3199e4bac6 | control-2 | 78b5781d-42e0-40d1-940f-869fb3de6c66 | power on    | active             | False       |
+    | 2a1225c3-2a3e-415f-8bea-d0f13699a3e2 | compute-0 | 909576b0-1e24-42bc-9c17-a9e658ee13f3 | power on    | active             | False       |
+    | 9ec746e2-801e-4fda-8e81-bd4c8169a0c4 | compute-1 | 6fbe0a94-4d5b-4fbd-a3ce-38972e580deb | power on    | active             | False       |
+    | 95285ffe-cc9d-4b20-b7a2-d958ed39420a | compute-2 | e55bcb60-c974-456b-b547-8a61f05a143f | power on    | active             | False       |
+    | 08244664-df82-45b2-9792-8ce156da3d11 | storage-0 | 3e924d5d-5a37-4be3-ba43-28b1663973c8 | power on    | active             | False       |
+    | bbf15617-37df-40b6-8bd9-efee48501738 | storage-1 | eab06a66-cd90-4468-9da3-45ec69a06aad | power on    | active             | False       |
+    | 68d70cb0-76a7-4050-bf4f-64be324eaa37 | storage-2 | 9707f1af-c926-4b9e-8fd9-080b52de36a3 | power on    | active             | False       |
+    +--------------------------------------+-----------+--------------------------------------+-------------+--------------------+-------------+
+
+
+This will show a list of nodes that are available in the environment. This information 
 
 
 ## Login to overcloud nodes
 If you need to inspect a node in the overcloud (workload), you can login to these nodes from the undercloud using the following command:
-
 
 ```
 [stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[nodeip]
@@ -208,9 +229,22 @@ If you need to inspect a node in the overcloud (workload), you can login to thes
 ## Scale out
 
 
+
 ## Diskimage building
+The _undercloud_ images can be created using [ansible-role-tripleo-image-build](https://github.com/redhat-openstack/ansible-role-tripleo-image-build).
+Using the following commands it will generate the images:
+
+```
+$ git clone https://github.com/redhat-openstack/ansible-role-tripleo-image-build.git
+$ cd ansible-role-tripleo-image-build/tests/pip
+$ sudo ./build.sh -i
+$ ./build.sh $VIRTHOST
+```
+
+After the command finishes succesfully, the images can be found in
+`/var/lib/oooq-images`.
 
 
 ## More information
-See [scratchpad](https://github.com/gbraad/openstack-tripleo-scratchpad) for notes on 
-TripleO.
+See [scratchpad](https://github.com/gbraad/openstack-tripleo-scratchpad) for
+notes on TripleO.
