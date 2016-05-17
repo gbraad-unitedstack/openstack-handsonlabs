@@ -4,6 +4,11 @@ _Gerard Braad <me@gbraad.nl>_
 
 
 ## Prerequisites
+If installing with PackStack, you can install OpenStack Heat by specifying
+`--os-heat-install=y` on the command-line as parameter, or setting
+`CONFIG_HEAT_INSTALL=y` in your answers file.
+
+On the client node, you need the following tools:
 
 ```
 $ yum install -y python-virtualenv
