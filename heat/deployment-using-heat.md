@@ -75,3 +75,15 @@ To see the output of the heat stack:
 ```
 (venv) $ heat stack-show my_stack
 ```
+
+
+## Resource Group
+
+```
+(venv) $ heat stack-create my_group -f create-instance-group.yaml -e environment-create-instance.yaml
+```
+
+
+## References
+
+  * https://review.openstack.org/#/c/119015/2
