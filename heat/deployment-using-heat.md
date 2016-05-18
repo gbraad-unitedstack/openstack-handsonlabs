@@ -86,4 +86,5 @@ To see the output of the heat stack:
 
 ## References
 
+  * http://docs.openstack.org/developer/heat/template_guide/index.html
   * https://review.openstack.org/#/c/119015/2
