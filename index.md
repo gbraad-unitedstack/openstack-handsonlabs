@@ -3,7 +3,7 @@
   * Building a multi-tier application  
     [HTML](building-multitier-application-using-OpenStack.html), 
     [Printable PDF](building-multitier-application-using-OpenStack.pdf)
-  * Deploying OpenStack using TripleO *WIP*  
+  * Deploying OpenStack using TripleO  
     [HTML](deploying-OpenStack-using-TripleO.html), 
     [Printable PDF](deploying-OpenStack-using-TripleO.pdf)
   * Instance deployment using OpenStack Heat *WIP*  

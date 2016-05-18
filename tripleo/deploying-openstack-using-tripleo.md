@@ -1,4 +1,4 @@
-#Deploying OpenStack using TripleO *(WIP)*
+#Deploying OpenStack using TripleO
 
 _Gerard Braad <me@gbraad.nl>_
 
