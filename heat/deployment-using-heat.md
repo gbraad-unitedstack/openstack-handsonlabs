@@ -22,7 +22,7 @@ $ source venv/bin/activate
 Use the file `create-instance.yml`
 
 ```
-heat_template_version: 2013-05-23
+heat_template_version: 2016-04-08
 
 description: A simple template to deploy Cirros as a single compute instance
 
