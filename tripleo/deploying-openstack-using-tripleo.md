@@ -279,6 +279,21 @@ After this you can scale out using
 This will change the current _overcloud_ heat deployment and provision the
 remaining nodes.
 
+Eventually the command will return with:
+
+    ...
+    Stack overcloud UPDATE_COMPLETE
+    Overcloud Endpoint: http://192.0.2.6:5000/v2.0
+    Overcloud Deployed
+    
+
+after which the new nodes have been added to the _overcloud_. To update the
+hosts entries in `/etc/hosts` you can rerun:
+
+```
+[stack@undercloud ~]$ ./overcloud-deploy-post.sh
+```
+
 
 ## Diskimage building
 The _undercloud_ images can be created using [ansible-role-tripleo-image-build](https://github.com/redhat-openstack/ansible-role-tripleo-image-build).
