@@ -273,7 +273,7 @@ You can verify the status with `ironic node-list`.
 
 After this you can scale out using
 ```
-[stack@undercloud ~]$ openstack overcloud deploy --templates --libvirt-type qemu --control-flavor oooq_control --compute-flavor oooq_compute --ceph-storage-flavor oooq_ceph --timeout 60 --ntp-server pool.ntp.org --compute-scale 2
+[stack@undercloud ~]$ openstack overcloud deploy --templates --libvirt-type qemu --control-flavor oooq_control --compute-flavor oooq_compute --ceph-storage-flavor oooq_ceph --timeout 60 --ntp-server pool.ntp.org --compute-scale 3
 ```
 
 This will change the current _overcloud_ heat deployment and provision the
@@ -312,8 +312,18 @@ After the command finishes succesfully, the images can be found in
 Note: The content of `/var/lib/oooq-images` will be cleaned on run. After this
 it will download a base image from
 `http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2` of
-about 800M. You can download this image and specify the location in the
-`defaults/main.yml` file to prevent it from having to be downloaded each time.
+about 800M. You can download this image and specify the location in a
+configuration file to prevent it from having to be downloaded each time.
+
+A create a file called: `override.yml`
+```
+artib_minimal_base_image_url: file:///var/lib/oooq-base-images/CentOS-7-x86_64-GenericCloud.qcow2
+```
+
+And pass this to the build command:
+```
+$ ./build.sh -e override.yml $VIRTHOST 
+```
 
 
 ## More information
