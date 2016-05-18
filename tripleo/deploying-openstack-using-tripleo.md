@@ -219,19 +219,40 @@ This will show a list of nodes that are available in the environment. This infor
 
 
 ## Login to the overcloud
+From the undercloud node you can source the stack resource file and use the
+_openstack clients_ as usual.
 
 ```
 [stack@undercloud ~]$ . overcloudrc
 [stack@undercloud ~]$ cat overcloudrc
+[stack@undercloud ~]$ nova list
 ```
+
+In the previous output you also see the `OS_AUTH_URL` and the credentials
+needed to login from the Horizon dashboard.
+
+Either using ssh portforwaring, or the dynamic proxy option, you can open the
+dashboard.
+ 
+```
+$ ssh -F ~/.quickstart/ssh.config.ansible undercloud -D 8080
+```
+
+Either using Firefox (with the FoxyProxy extension) or Chrome/Vivaldi (with the
+SwitchySharp extension) you can set a SOCKS proxy at `127.0.0.1` and port
+`8080`.
+
 
 ## Login to overcloud nodes
 If you need to inspect a node in the overcloud (workload), you can login to these nodes from the undercloud using the following command:
 
 ```
-[stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[nodeip]
+[stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[hostname/nodeip]
 ```
 
+Note: you can find the hostnames and IP addresses on the _undercloud_ in the
+`/etc/hosts` file.
+ 
 
 ## Scale out
 After deployment, you might have noticed that `ironic node-list` returned a
@@ -255,6 +276,10 @@ After this you can scale out using
 [stack@undercloud ~]$ openstack overcloud deploy --templates --libvirt-type qemu --control-flavor oooq_control --compute-flavor oooq_compute --ceph-storage-flavor oooq_ceph --timeout 60 --ntp-server pool.ntp.org --compute-scale 2
 ```
 
+This will change the current _overcloud_ heat deployment and provision the
+remaining nodes.
+
+
 ## Diskimage building
 The _undercloud_ images can be created using [ansible-role-tripleo-image-build](https://github.com/redhat-openstack/ansible-role-tripleo-image-build).
 Using the following commands it will generate the images:
@@ -269,7 +294,18 @@ $ ./build.sh $VIRTHOST
 After the command finishes succesfully, the images can be found in
 `/var/lib/oooq-images`.
 
+Note: The content of `/var/lib/oooq-images` will be cleaned on run. After this
+it will download a base image from
+`http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2` of
+about 800M. You can download this image and specify the location in the
+`defaults/main.yml` file to prevent it from having to be downloaded each time.
+
 
 ## More information
-See [scratchpad](https://github.com/gbraad/openstack-tripleo-scratchpad) for
-notes on TripleO.
+
+  * Deployment configuration options  
+    https://github.com/openstack/tripleo-quickstart/blob/master/docs/configuring.md
+  * Scratchpad for development/architecture notes on TripleO  
+    https://github.com/gbraad/openstack-tripleo-scratchpad
+  * Openstack deployment using RDO-Manager  
+    https://remote-lab.net/rdo-manager-ha-openstack-deployment
