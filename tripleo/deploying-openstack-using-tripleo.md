@@ -203,15 +203,15 @@ You can verify this from the _undercloud_ node.
     +--------------------------------------+-----------+--------------------------------------+-------------+--------------------+-------------+
     | UUID                                 | Name      | Instance UUID                        | Power State | Provisioning State | Maintenance |
     +--------------------------------------+-----------+--------------------------------------+-------------+--------------------+-------------+
-    | ccf541fc-180e-4777-bfb6-71e92be50de3 | control-0 | c709bd16-a62a-4898-b9c0-308bcfc8a6b4 | power on    | active             | False       |
-    | 90e16fbb-2386-48c3-8d55-1210672aa8b6 | control-1 | afbc52cc-4c5c-48e3-aed5-d68dda436601 | power on    | active             | False       |
-    | e9f01263-8d89-45e4-a5da-4b3199e4bac6 | control-2 | 78b5781d-42e0-40d1-940f-869fb3de6c66 | power on    | active             | False       |
-    | 2a1225c3-2a3e-415f-8bea-d0f13699a3e2 | compute-0 | 909576b0-1e24-42bc-9c17-a9e658ee13f3 | power on    | active             | False       |
-    | 9ec746e2-801e-4fda-8e81-bd4c8169a0c4 | compute-1 | 6fbe0a94-4d5b-4fbd-a3ce-38972e580deb | power on    | active             | False       |
-    | 95285ffe-cc9d-4b20-b7a2-d958ed39420a | compute-2 | e55bcb60-c974-456b-b547-8a61f05a143f | power on    | active             | False       |
-    | 08244664-df82-45b2-9792-8ce156da3d11 | storage-0 | 3e924d5d-5a37-4be3-ba43-28b1663973c8 | power on    | active             | False       |
-    | bbf15617-37df-40b6-8bd9-efee48501738 | storage-1 | eab06a66-cd90-4468-9da3-45ec69a06aad | power on    | active             | False       |
-    | 68d70cb0-76a7-4050-bf4f-64be324eaa37 | storage-2 | 9707f1af-c926-4b9e-8fd9-080b52de36a3 | power on    | active             | False       |
+    | 5c4f1ad5-3cea-41c2-8fa8-f3468e660447 | control-0 | aea0add0-f638-4a41-97ca-a2a64ac083a5 | None        | active             | True        |
+    | 0a0bf5e8-e903-4f77-be35-0a49f4da5109 | control-1 | 75778a5e-5e65-48bc-9934-d4cb203fad86 | None        | active             | True        |
+    | 12aa12d2-0023-48ac-89d2-4e138f6eef08 | control-2 | f74b2b00-0c01-44a5-917e-45fff058f2fa | None        | active             | True        |
+    | 6a0533a2-d91f-4f45-acbb-5f5f231c8986 | compute-0 | None                                 | None        | available          | True        |
+    | e8663954-4da8-4027-9226-f9f053f269d9 | compute-1 | 113afdbd-0afa-481c-a744-90276907b8e2 | None        | active             | True        |
+    | 06679c73-97a2-4de0-b676-193a3e182fcf | compute-2 | None                                 | None        | available          | True        |
+    | a6ef4bce-941c-407d-966e-85df2af3f6e1 | storage-0 | bbba571f-f2a9-46f3-a270-f154e045c5a8 | None        | active             | True        |
+    | 6174dbb7-28e7-425e-b675-f1653f0b731c | storage-1 | d3afc0e8-70a0-43c4-b35a-693a7e4e5fa5 | None        | active             | True        |
+    | 32e8122b-3a5f-45fb-8a5a-60dc4f82325f | storage-2 | 53ea0799-1bcd-4f55-8671-e6a7f7f46054 | None        | active             | True        |
     +--------------------------------------+-----------+--------------------------------------+-------------+--------------------+-------------+
 
 
@@ -219,49 +219,41 @@ This will show a list of nodes that are available in the environment. This infor
 
 
 ## Login to the overcloud
-From the undercloud node you can source the stack resource file and use the
-_openstack clients_ as usual.
 
 ```
 [stack@undercloud ~]$ . overcloudrc
 [stack@undercloud ~]$ cat overcloudrc
-[stack@undercloud ~]$ nova list
 ```
-
-In the previous output you also see the `OS_AUTH_URL` and the credentials
-needed to login from the Horizon dashboard.
-
-Either using ssh portforwaring, or the dynamic proxy option, you can open the
-dashboard.
-
-```
-$ ssh -F ~/.quickstart/ssh.config.ansible undercloud -D 8080
-```
-
-Either using Firefox (with the FoxyProxy extension) or Chrome/Vivaldi (with the
-SwitchySharp extension) you can set a SOCKS proxy at `127.0.0.1` and port
-`8080`.
-
 
 ## Login to overcloud nodes
 If you need to inspect a node in the overcloud (workload), you can login to these nodes from the undercloud using the following command:
 
 ```
-[stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[hostname/nodeip]
+[stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[nodeip]
 ```
-
-Note: you can find the hostnames and IP addresses on the _undercloud_ in the
-`/etc/hosts` file.
 
 
 ## Scale out
+After deployment, you might have noticed that `ironic node-list` returned a
+list of baremetal nodes that are in _Provisioning state_ 'available' and do not
+have an _Instance UUID_. These nodes have not been deployed to, as
+`--compute-scale` had not been set.
+
+To scale out to these nodes, you first need to change the `Maintenance` status
+to false. You can do this for all available at once with:
 
 ```
-[stack@undercloud ~]$ for i in $(ironic node-list | grep Available | grep -v UUID | awk ' { print $2 } '); do
+[stack@undercloud ~]$ for i in $(ironic node-list | grep available | grep -v UUID | awk ' { print $2 } '); do
 > ironic node-set-maintenance $i false;
 > done
 ```
 
+You can verify the status with `ironic node-list`.
+
+After this you can scale out using
+```
+[stack@undercloud ~]$ openstack overcloud deploy --templates --libvirt-type qemu --control-flavor oooq_control --compute-flavor oooq_compute --ceph-storage-flavor oooq_ceph --timeout 60 --ntp-server pool.ntp.org --compute-scale 2
+```
 
 ## Diskimage building
 The _undercloud_ images can be created using [ansible-role-tripleo-image-build](https://github.com/redhat-openstack/ansible-role-tripleo-image-build).
@@ -277,18 +269,7 @@ $ ./build.sh $VIRTHOST
 After the command finishes succesfully, the images can be found in
 `/var/lib/oooq-images`.
 
-Note: The content of `/var/lib/oooq-images` will be cleaned on run. After this
-it will download a base image from
-`http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2` of
-about 800M. You can download this image and specify the location in the
-`defaults/main.yml` file to prevent it from having to be downloaded each time.
-
 
 ## More information
-
-  * Deployment configuration options  
-    https://github.com/openstack/tripleo-quickstart/blob/master/docs/configuring.md
-  * Scratchpad for development/architecture notes on TripleO  
-    https://github.com/gbraad/openstack-tripleo-scratchpad
-  * Openstack deployment using RDO-Manager  
-    https://remote-lab.net/rdo-manager-ha-openstack-deployment
+See [scratchpad](https://github.com/gbraad/openstack-tripleo-scratchpad) for
+notes on TripleO.
