@@ -247,11 +247,11 @@ SwitchySharp extension) you can set a SOCKS proxy at `127.0.0.1` and port
 If you need to inspect a node in the overcloud (workload), you can login to these nodes from the undercloud using the following command:
 
 ```
-[stack@undercloud ~]$ ssh -i ~/.ssh/id_rsa heat-admin@[hostname/nodeip]
+[stack@undercloud ~]$ ssh heat-admin@[hostname/nodeip]
 ```
 
 Note: you can find the hostnames and IP addresses on the _undercloud_ in the
-`/etc/hosts` file.
+`/etc/hosts` file. You can also login using 'root'.
  
 
 ## Scale out
