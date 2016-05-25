@@ -1,6 +1,9 @@
 Hands-on-lab used for OpenStack training
 ========================================
 
+This repository contains lab instructions for use with OpenStack
+
+  * [Table of Contents](SUMMARY.md)
 
 
 Authors
