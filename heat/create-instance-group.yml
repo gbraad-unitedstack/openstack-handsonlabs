@@ -1,8 +1,0 @@
-heat_template_version: 2016-04-08
-
-resources:
-  rg:
-    type: OS::Heat::ResourceGroup
-    properties:
-      count: 5
-      resource_def: {type: My::Server:Instance}

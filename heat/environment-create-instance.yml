@@ -1,2 +1,0 @@
-resource_registry:
-  My::Server::Instance: create-instance.yml

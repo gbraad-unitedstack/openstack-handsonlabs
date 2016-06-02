@@ -84,6 +84,11 @@ To see the output of the heat stack:
 ```
 
 
+## Templates
+The templates used in this hands-on-labs are available at:
+
+  * https://github.com/gbraad/openstack-heat-templates
+
 ## References
 
   * http://docs.openstack.org/developer/heat/template_guide/index.html
