@@ -12,12 +12,13 @@ nodes.
 
 
 ## What is TripleO, _undercloud_ and _overcloud_?
-[TripleO](https://) is a deployment method in which a dedicated OpenStack
-management environment is used to deploy another OpenStack environment which is
-used for the workload. The management environment is contained in a single
-machine, called the _undercloud_. This OpenStack environment takes care of the
-monitoring and management of what is known as the _overcloud_. The _overcloud_
-is the actual OpenStack environment that will run the workload.
+[TripleO](https://wiki.openstack.org/wiki/TripleO) is a deployment method in
+which a dedicated OpenStack management environment is used to deploy another
+OpenStack environment which is used for the workload. The management environment
+is contained in a single machine, called the _undercloud_. This OpenStack
+environment takes care of the monitoring and management of what is known as the
+_overcloud_. The _overcloud_ is the actual OpenStack environment that will run
+the workload.
 
 
 ## Prerequisites
@@ -247,11 +248,11 @@ SwitchySharp extension) you can set a SOCKS proxy at `127.0.0.1` and port
 If you need to inspect a node in the overcloud (workload), you can login to these nodes from the undercloud using the following command:
 
 ```
-[stack@undercloud ~]$ ssh heat-admin@[hostname/nodeip]
+[stack@undercloud ~]$ ssh [hostname/nodeip]
 ```
 
 Note: you can find the hostnames and IP addresses on the _undercloud_ in the
-`/etc/hosts` file. You can also login using 'root'.
+`/etc/hosts` file. It will use 'heat-admin' as user to login.
  
 
 ## Scale out
