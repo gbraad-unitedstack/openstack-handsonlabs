@@ -3,7 +3,19 @@ Hands-on-lab used for OpenStack training
 
 This repository contains lab instructions for use with OpenStack
 
-  * [Table of Contents](SUMMARY.md)
+### Neutron
+
+  * [Building a multi-tier application](neutron/building-multitier-application.md)
+
+
+### Heat
+
+  * [Instance deployment using OpenStack Heat](heat/deployment-using-heat.md)
+
+
+### TripleO
+
+  * [Deploying OpenStack using TripleO](tripleo/deploying-openstack-using-tripleo.md)
 
 
 Authors
