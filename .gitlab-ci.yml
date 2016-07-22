@@ -1,4 +1,4 @@
-image: gbraad/docugen:latest
+image: registry.gitlab.com/gbraad/docugen:latest
 
 pages:
   script:
