@@ -8,7 +8,7 @@ pages:
   - pandoc -t html5 --template template/index-template.html --standalone -o deployment-using-OpenStack-Heat.html ./heat/deployment-using-heat.md
   - pandoc -V geometry:margin=1in -o deploying-OpenStack-using-TripleO.pdf ./tripleo/deploying-openstack-using-tripleo.md
   - pandoc -t html5 --template template/index-template.html --standalone -o deploying-OpenStack-using-TripleO.html ./tripleo/deploying-openstack-using-tripleo.md 
-  - pandoc -t html5 --template template/index-template.html --standalone -o index.html ./index.md
+  - pandoc -t html5 -f markdown-citations --template template/index-template.html --standalone -o index.html ./index.md
   - mkdir .public
   - cp -r * .public
   - mv .public public
