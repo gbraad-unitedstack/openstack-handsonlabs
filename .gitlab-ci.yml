@@ -2,7 +2,7 @@ image: registry.gitlab.com/gbraad/docugen:latest
 
 pages:
   script:
-  - git clone https://gitlab.com/gbraad/document-generation-templates.git for-generation --depth 1
+  - git clone https://gitlab.com/gbraad/document-generation-assets.git for-generation --depth 1
   - pandoc -V geometry:margin=1in -o building-multitier-application-using-OpenStack.pdf ./neutron/building-multitier-application.md
   - pandoc -t html5 --template for-generation/templates/article-template.html --standalone -o building-multitier-application-using-OpenStack.html ./neutron/building-multitier-application.md
   - pandoc -V geometry:margin=1in -o deployment-using-OpenStack-Heat.pdf ./heat/deployment-using-heat.md
